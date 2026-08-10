@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodnověří.cz | Návrat ke kořenům a slovanským tradicím</title>
+    <style>
+        /* === PROMĚNNÉ A MOTIVY === */
+        :root {
+            /* Denní motiv (Papír, len, dřevo) */
+            --bg-page: #f4ebd8;
+            --bg-section: #e8dcc4;
+            --text-main: #3a2e24;
+            --text-muted: #5c4d3c;
+            --accent-primary: #8b4513; /* Dřevitá hnědá */
+            --accent-secondary: #4a5d23; /* Mechová zelená */
+            --border-color: #c4b095;
+            --shadow: rgba(58, 46, 36, 0.2);
+            --fire-glow: rgba(217, 119, 43, 0.4);
+            --nav-bg: rgba(244, 235, 216, 0.95);
+        }
+
+        [data-theme="night"] {
+            /* Noční obřadní motiv (Tmavý les, oheň) */
+            --bg-page: #121210;
+            --bg-section: #1c1a17;
+            --text-main: #e0d6c8;
+            --text-muted: #9e9383;
+            --accent-primary: #d9772b; /* Barva ohně */
+            --accent-secondary: #6b8236; /* Světlejší mechová */
+            --border-color: #3d352b;
+            --shadow: rgba(0, 0, 0, 0.7);
+            --fire-glow: rgba(217, 119, 43, 0.8);
+            --nav-bg: rgba(18, 18, 16, 0.95);
+        }
+
+        /* === ZÁKLADNÍ NASTAVENÍ === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: "Georgia", "Times New Roman", serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: normal;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+            text-align: center;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* === TYPOGRAFIE A ORNAMENTY === */
+        .ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            color: var(--accent-primary);
+        }
+        .ornament-divider::before, .ornament-divider::after {
+            content: "";
+            height: 2px;
+            flex-grow: 1;
+            background: linear-gradient(to right, transparent, var(--accent-primary), transparent);
+            max-width: 200px;
+        }
+        .ornament-divider svg {
+            width: 40px; height: 40px; fill: currentColor; margin: 0 15px;
+            animation: spin-slow 20s linear infinite;
+        }
+
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+
+        /* === NAVIGACE === */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--nav-bg);
+            border-bottom: 2px solid var(--border-color);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            transition: background 0.5s ease;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+        .logo {
+            font-size: 1.8rem; font-weight: bold; color: var(--accent-primary);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links a {
+            color: var(--text-main); text-decoration: none; font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-primary); }
+        
+        .nav-controls { display: flex; align-items: center; gap: 15px; }
+        
+        #theme-toggle {
+            background: none; border: none; cursor: pointer; color: var(--text-main);
+            display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+            border-radius: 50%; border: 1px solid var(--border-color); transition: 0.3s;
+        }
+        #theme-toggle:hover { background: var(--bg-section); }
+
+        .hamburger {
+            display: none; background: none; border: none; color: var(--text-main);
+            font-size: 1.8rem; cursor: pointer;
+        }
+
+        /* === HERO SEKCE === */
+        .hero {
+            padding: 120px 20px 60px; text-align: center;
+            background: radial-gradient(circle at center, var(--bg-section), var(--bg-page));
+            border-bottom: 2px solid var(--border-color);
+        }
+        .hero h1 { font-size: 3rem; margin-bottom: 10px; }
+        .hero p.subtitle { font-size: 1.3rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; font-style: italic; }
+
+        /* Měsíční Widget */
+        .moon-widget {
+            margin: 30px auto 0; padding: 15px 30px; border: 1px solid var(--accent-secondary);
+            border-radius: 50px; display: inline-flex; align-items: center; gap: 15px;
+            background: var(--bg-section); box-shadow: 0 4px 10px var(--shadow);
+        }
+        .moon-icon { width: 40px; height: 40px; fill: var(--accent-primary); }
+
+        /* === SEKCE === */
+        section { padding: 80px 0; border-bottom: 1px dashed var(--border-color); }
+        .section-title { font-size: 2.5rem; margin-bottom: 2rem; }
+
+        /* Karty, Detaily, Formuláře */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card {
+            background: var(--bg-section); border: 1px solid var(--border-color);
+            padding: 25px; border-radius: 8px; text-align: center;
+            box-shadow: 0 4px 6px var(--shadow); transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px var(--shadow); border-color: var(--accent-primary); }
+        .card-icon { width: 60px; height: 60px; fill: var(--accent-secondary); margin-bottom: 15px; }
+        
+        .btn {
+            background: var(--bg-page); color: var(--accent-primary); border: 2px solid var(--accent-primary);
+            padding: 10px 20px; cursor: pointer; font-family: inherit; font-size: 1rem; font-weight: bold;
+            transition: all 0.3s; text-decoration: none; display: inline-block; border-radius: 4px;
+        }
+        .btn:hover { background: var(--accent-primary); color: var(--bg-page); }
+
+        /* Akordeon pro Filosofii */
+        details {
+            background: var(--bg-section); border: 1px solid var(--border-color);
+            margin-bottom: 10px; border-radius: 4px; overflow: hidden;
+        }
+        summary {
+            padding: 15px 20px; font-weight: bold; cursor: pointer; color: var(--accent-primary);
+            background: var(--bg-page); font-size: 1.2rem;
+            list-style: none; display: flex; justify-content: space-between; align-items: center;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: "▼"; font-size: 0.9rem; transition: transform 0.3s; }
+        details[open] summary::after { transform: rotate(180deg); }
+        details .details-content { padding: 20px; border-top: 1px solid var(--border-color); }
+
+        /* === MODÁLNÍ OKNO === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 2000;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal {
+            background: var(--bg-page); width: 90%; max-width: 700px; max-height: 90vh;
+            overflow-y: auto; padding: 40px; border: 4px double var(--accent-primary);
+            border-radius: 8px; position: relative; box-shadow: 0 10px 30px #000;
+        }
+        .modal-close {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            font-size: 2rem; color: var(--text-main); cursor: pointer;
+        }
+        .modal-actions { margin-top: 30px; text-align: center; }
+
+        /* === PRŮVODCE OBŘADEM (Taby) === */
+        .guide-container { background: var(--bg-section); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .guide-tabs { display: flex; border-bottom: 1px solid var(--border-color); overflow-x: auto; }
+        .guide-tab {
+            flex: 1; padding: 15px; background: none; border: none; color: var(--text-main);
+            cursor: pointer; font-family: inherit; font-size: 1.1rem; min-width: 150px;
+        }
+        .guide-tab.active { background: var(--accent-primary); color: var(--bg-page); font-weight: bold; }
+        .guide-content { display: none; padding: 30px; }
+        .guide-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+        /* === SVATYNĚ (CSS Art) === */
+        .sanctuary-box {
+            background: var(--bg-page); border: 2px solid var(--border-color); border-radius: 10px;
+            padding: 40px; text-align: center; position: relative; overflow: hidden;
+            box-shadow: inset 0 0 50px var(--shadow); margin-bottom: 40px;
+        }
+        .idols-container { display: flex; justify-content: center; gap: 40px; align-items: flex-end; height: 250px; margin-bottom: 20px; }
+        .idol {
+            width: 60px; background: linear-gradient(to right, #4a3525, #6b4c3a, #4a3525);
+            border-radius: 5px 5px 0 0; position: relative; border: 1px solid #2a1f15;
+            display: flex; flex-direction: column; align-items: center; justify-content: top; padding-top: 10px;
+        }
+        .idol::before {
+            content: ""; width: 40px; height: 40px; border-radius: 50%;
+            border: 2px solid #2a1f15; margin-bottom: 10px; background: rgba(0,0,0,0.2);
+        }
+        .idol.perun { height: 220px; }
+        .idol.mokos { height: 180px; width: 50px; }
+        .idol.veles { height: 200px; }
+        .idol-label { position: absolute; bottom: -30px; color: var(--text-main); font-weight: bold; }
+        
+        .fire-pit {
+            width: 120px; height: 30px; background: #555; border-radius: 50%;
+            margin: 0 auto; position: relative; border: 3px dashed #333;
+        }
+        .flame {
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; background: var(--accent-primary);
+            border-radius: 50% 50% 20% 20%; opacity: 0; transition: all 1s;
+            box-shadow: 0 0 0 var(--fire-glow);
+        }
+        .flame.lit {
+            width: 60px; height: 80px; opacity: 1;
+            background: radial-gradient(ellipse at bottom, #fff 10%, #ffeb3b 30%, #ff9800 60%, #f44336 90%);
+            box-shadow: 0 -20px 60px 20px var(--fire-glow);
+            animation: flicker 0.5s alternate infinite;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+            100% { transform: translateX(-50%) scale(1.1) skew(-3deg); opacity: 1; }
+        }
+
+        /* === FORMULÁŘE === */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input[type="date"], input[type="text"] {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color);
+            background: var(--bg-page); color: var(--text-main); font-family: inherit;
+            border-radius: 4px;
+        }
+        .generator-output {
+            margin-top: 20px; padding: 20px; background: var(--bg-page);
+            border: 2px dashed var(--accent-primary); border-radius: 8px; display: none;
+            font-style: italic; font-size: 1.2rem;
+        }
+
+        /* === ODKAZY A PATIČKA === */
+        .links-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .links-grid a {
+            background: var(--bg-section); padding: 15px 25px; border-radius: 30px;
+            text-decoration: none; color: var(--text-main); border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        .links-grid a:hover { background: var(--accent-primary); color: var(--bg-page); }
+
+        footer { background: var(--bg-section); padding: 40px 20px; text-align: center; border-top: 2px solid var(--border-color); margin-top: 40px; }
+
+        /* === TLAČÍTKO ZPĚT NAHORU === */
+        #scroll-top {
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background: var(--accent-primary); color: var(--bg-page); border: none;
+            border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; transition: transform 0.3s;
+        }
+        #scroll-top:hover { transform: translateY(-5px); }
+
+        /* === COOKIE LIŠTA === */
+        #cookie-banner {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg);
+            border-top: 2px solid var(--accent-primary); padding: 20px; text-align: center;
+            z-index: 9999; display: flex; flex-direction: column; gap: 15px; align-items: center;
+        }
+        .cookie-btns { display: flex; gap: 10px; }
+
+        /* === RESPONZIVITA === */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; flex-direction: column; position: absolute;
+                top: 70px; left: 0; width: 100%; background: var(--nav-bg);
+                padding: 20px 0; border-bottom: 2px solid var(--border-color);
+            }
+            .nav-links.active { display: flex; align-items: center; }
+            .hamburger { display: block; }
+            .hero h1 { font-size: 2.2rem; }
+            .idols-container { gap: 20px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .guide-tabs { flex-direction: column; }
+        }
+
+        /* === TISKOVÉ STYLY (Pro generování PDF/Tisku) === */
+        @media print {
+            body * { visibility: hidden; }
+            body { background: #fff !important; color: #000 !important; }
+            .printable, .printable * { visibility: visible; }
+            .printable {
+                position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+                border: none; box-shadow: none; background: none;
+            }
+            .printable .btn, .printable .modal-close { display: none !important; }
+            .printable h2 { color: #000 !important; }
+            .ornament-divider { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGACE -->
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <svg width="30" height="30" viewBox="0 0 100 100" fill="currentColor">
+                    <!-- Zjednodušený Kolovrat SVG -->
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="4"/>
+                    <path d="M50 5 L50 50 L95 50 M50 95 L50 50 L5 50 M15 15 L50 50 L85 85 M15 85 L50 50 L85 15" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+                Rodnověří.cz
+            </a>
+            <ul class="nav-links">
+                <li><a href="#zaklady">Filosofie</a></li>
+                <li><a href="#bohove">Bohové</a></li>
+                <li><a href="#kalendar">Kalendář a Obřady</a></li>
+                <li><a href="#svatyne">Svatyně a Modlitby</a></li>
+                <li><a href="#nastroje">Nástroje</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button id="theme-toggle" title="Přepnout denní/noční režim">
+                    <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="hamburger">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SEKCE -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <h1>Návrat k moudrosti Předků</h1>
+            <p class="subtitle">Slovanská mytologie, přírodní duchovno a živá víra starých Slovanů.</p>
+            
+            <div class="moon-widget" id="moon-widget">
+                <!-- Vykresluje JS -->
+                <svg class="moon-icon" viewBox="0 0 24 24"></svg>
+                <div>
+                    <strong>Fáze Měsíce:</strong> <span id="moon-phase-name">Načítám...</span><br>
+                    <small id="moon-advice">...</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZÁKLADY A FILOSOFIE -->
+    <section id="zaklady">
+        <div class="container">
+            <h2 class="section-title">Základy Rodnověří</h2>
+            <p style="text-align:center; max-width: 800px; margin: 0 auto 30px;">Slovanské rodnověří není strnulým dogmatem, ale živým vztahem k Přírodě, Bohům a Předkům. Vše kolem nás je prodchnuto božskou silou a naším cílem je žít s ní v souladu.</p>
+            
+            <details>
+                <summary>Příroda je božská</summary>
+                <div class="details-content">Země, lesy, řeky a nebesa nejsou jen "mrtvou hmotou". Jsou tělem a projevem Bohů. Matka Mokoš dává život a úrodu, nebeský Svarog udržuje řád. Člověk je součástí přírody, nikoliv jejím pánem.</div>
+            </details>
+            <details>
+                <summary>Vesmír ze zlatého vejce Boha Roda</summary>
+                <div class="details-content">Na počátku nebylo nic, jen neprojevený Rod. Ten rozbil Zlaté vejce, ze kterého vznikl vesmír, láska (Lada) a prvotní stvořitel Svarog. Rod je vším a vše je v něm – je to síla pokrevní linie a stvoření.</div>
+            </details>
+            <details>
+                <summary>Svět Bohů Prav a posmrtný svět Nav</summary>
+                <div class="details-content">Slované vnímají vesmír jako strom. Koruna (Prav) je sídlo zákonů a světlých Bohů. Kmen (Jav) je náš materiální svět. Kořeny (Nav) jsou podsvětím a říší předků, které vládne moudrý Veles.</div>
+            </details>
+            <details>
+                <summary>Předkové na nás dohlížejí</summary>
+                <div class="details-content">Úcta k předkům (Dědům) je pilířem rodnověří. Věříme, že naši zesnulí žijí v říši Nav, odkud mohou ovlivňovat náš život, chránit nás a radit nám. Během svátků (tzv. Dědů) se pro ně prostírá u stolu.</div>
+            </details>
+            <details>
+                <summary>Každá rodina má Domovoje</summary>
+                <div class="details-content">Domovoj je duch ochránce domu a hospodářství, často vnímaný jako duch zakladatele rodu. Pokud je mu prokazována úcta (miska s mlékem či kaší), domov vzkvétá. Pokud je zanedbán, přináší potíže.</div>
+            </details>
+            <details>
+                <summary>Osud určovaný třemi Rožanicemi</summary>
+                <div class="details-content">Při narození dítěte k němu přistupují tři Sudičky (Rožanice), které mu upředou a ustřihnou nit osudu. Tento osud (Podíl) je dán, ale člověk má svobodnou vůli v tom, jak s ním během života naloží.</div>
+            </details>
+            <details>
+                <summary>Roční cyklus mezi Perunem a Velesem</summary>
+                <div class="details-content">Kolo roku je nekonečný příběh. Veles (zima, podsvětí) a Perun (léto, nebesa) spolu vedou věčný kosmický boj, který zajišťuje dynamiku a střídání ročních období. Ani jeden není "zlý" – oba jsou nutní pro rovnováhu (Prav).</div>
+            </details>
+            <details>
+                <summary>Duchovní bytosti slovanských mýtů</summary>
+                <div class="details-content">Svět Jav je plný duchů. V lesích žije Lešij, ve vodách Vodník (Vodyanoj), na polích Polednice a ve vzduchu víly či rusalčiny. K těmto bytostem je třeba přistupovat s respektem, chránit jejich prostředí a nerušit jejich klid.</div>
+            </details>
+        </div>
+    </section>
+
+    <!-- DĚLÍCÍ ORNAMENT -->
+    <div class="container"><div class="ornament-divider">
+        <svg viewBox="0 0 100 100"><path d="M50 0 L100 50 L50 100 L0 50 Z" fill="currentColor"/></svg>
+    </div></div>
+
+    <!-- BOHOVÉ A BOHYNĚ (Grid) -->
+    <section id="bohove">
+        <div class="container">
+            <h2 class="section-title">Slovanští Bohové a Bohyně</h2>
+            <p style="text-align:center; margin-bottom:30px;">Zde je panteon hlavních bytostí, ke kterým se naši předkové obraceli.</p>
+            <div id="gods-grid" class="card-grid">
+                <!-- Generováno pomocí JS pro čistotu kódu -->
+            </div>
+        </div>
+    </section>
+
+    <!-- KALENDÁŘ A OBŘADY -->
+    <section id="kalendar" style="background: var(--bg-section);">
+        <div class="container">
+            <h2 class="section-title">Obřadní Kalendář a Průvodce</h2>
+            
+            <div class="card-grid" style="margin-bottom: 40px;">
+                <div class="card">
+                    <h3>Zimní & Jarní svátky</h3>
+                    <ul style="text-align:left; padding-left:20px;">
+                        <li><strong>21.12. Kračun:</strong> Zimní slunovrat, zrození nového Slunce (Božice).</li>
+                        <li><strong>Únor: Velesův svátek:</strong> Oslava hospodářství a obchůzka v maskách.</li>
+                        <li><strong>21.3. Vynášení Morany:</strong> Jarní rovnodennost. Konec zimy, pálení figuríny.</li>
+                        <li><strong>30.4. Jarovít / Filipojakubská:</strong> Oslava plodivé síly jara a očištění ohněm.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Letní & Podzimní svátky</h3>
+                    <ul style="text-align:left; padding-left:20px;">
+                        <li><strong>21.6. Kupadlo:</strong> Letní slunovrat. Oheň a voda, pletení věnců, hledání květu kapradí.</li>
+                        <li><strong>Konec července / 1.8.: Perunův den:</strong> Oslava bouřkovládce a ochránců rodu.</li>
+                        <li><strong>23.9. Dožínky:</strong> Podzimní rovnodennost, poděkování za úrodu a chléb.</li>
+                        <li><strong>Říjen / 31.10. Mokoš:</strong> Dědové, vzpomínka na zesnulé předky a oslava Matky Země.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Interaktivní průvodce -->
+            <h3 style="margin-top: 50px;">Základní obřad krok za krokem</h3>
+            <div class="guide-container">
+                <div class="guide-tabs">
+                    <button class="guide-tab active" onclick="showGuide(0)">1. Příprava</button>
+                    <button class="guide-tab" onclick="showGuide(1)">2. Očištění</button>
+                    <button class="guide-tab" onclick="showGuide(2)">3. Volání Bohů</button>
+                    <button class="guide-tab" onclick="showGuide(3)">4. Obětina</button>
+                    <button class="guide-tab" onclick="showGuide(4)">5. Závěr</button>
+                </div>
+                <div id="guide-content-box">
+                    <!-- JS doplní obsah -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DĚLÍCÍ ORNAMENT -->
+    <div class="container"><div class="ornament-divider">
+        <svg viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="currentColor"/></svg>
+    </div></div>
+
+    <!-- SVATYNĚ, OHEŇ A MODLITBY -->
+    <section id="svatyne">
+        <div class="container">
+            <h2 class="section-title">Online Přírodní Svatyně</h2>
+            <p style="text-align:center; margin-bottom:30px;">Zapal posvátný oheň a vytvoř obřadní modlitbu.</p>
+            
+            <div class="sanctuary-box">
+                <div class="idols-container">
+                    <div class="idol mokos" title="Mokoš - Matka Země"><span class="idol-label">Mokoš</span></div>
+                    <div class="idol perun" title="Perun - Bůh bouře a řádu"><span class="idol-label">Perun</span></div>
+                    <div class="idol veles" title="Veles - Pán podsvětí a moudrosti"><span class="idol-label">Veles</span></div>
+                </div>
+                <div class="fire-pit">
+                    <div id="sanctuary-flame" class="flame"></div>
+                </div>
+                <button class="btn" style="margin-top: 30px;" onclick="toggleFire()" id="fire-btn">Zapálit posvátný oheň</button>
+            </div>
+
+            <!-- Generátor modliteb -->
+            <div class="card" style="max-width: 600px; margin: 0 auto; text-align:left;">
+                <h3 style="text-align:left;">Generátor obřadních hlaholů</h3>
+                <div class="form-group">
+                    <label>Vyber božstvo:</label>
+                    <select id="prayer-god">
+                        <option value="Perun">Perunovi (Ochrana, spravedlnost, síla)</option>
+                        <option value="Veles">Velesovi (Moudrost, majetek, spojení s předky)</option>
+                        <option value="Mokos">Mokoši (Plodnost, zdraví rodiny, osud)</option>
+                        <option value="Dazbog">Dažbogovi (Hojnost, slunce, úspěch)</option>
+                        <option value="Predkove">Předkům (Vedení, vzpomínka, poděkování)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Vyber záměr:</label>
+                    <select id="prayer-intent">
+                        <option value="podakovani">Děkovná oběť (Poděkování za dary)</option>
+                        <option value="ochrana">Ochrana rodiny a domu</option>
+                        <option value="uroda">Zajištění zdaru a úrody</option>
+                        <option value="zdravi">Prosba o zdraví a sílu</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="generatePrayer()">Vytvořit hlahol</button>
+                
+                <div id="prayer-output-box" class="generator-output">
+                    <!-- Text modlitby -->
+                    <p id="prayer-text"></p>
+                    <div style="text-align:center; margin-top:20px;">
+                        <button class="btn" onclick="printElement('prayer-output-box')">Uložit / Stáhnout do PDF</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOROSKOP A JMENA -->
+    <section id="nastroje" style="background: var(--bg-section);">
+        <div class="container">
+            <h2 class="section-title">Slovanské Nástroje</h2>
+            
+            <div class="card-grid">
+                <!-- Horoskop -->
+                <div class="card">
+                    <h3>Slovanský Horoskop</h3>
+                    <p>Zjisti svého božského patrona a posvátný strom podle data narození.</p>
+                    <div class="form-group">
+                        <input type="date" id="horoscope-date">
+                    </div>
+                    <button class="btn" onclick="calculateHoroscope()">Odhalit patrona</button>
+                    
+                    <div id="horoscope-output" class="generator-output" style="margin-top: 15px;">
+                        <strong style="color:var(--accent-primary);" id="horoscope-god"></strong><br>
+                        Posvátný strom: <span id="horoscope-tree"></span><br><br>
+                        <span id="horoscope-desc" style="font-size:0.9rem;"></span>
+                    </div>
+                </div>
+
+                <!-- Jména -->
+                <div class="card">
+                    <h3>Generátor Jmen</h3>
+                    <p>Objev své staroslovanské jméno na základě tvých vlastností.</p>
+                    <div class="form-group">
+                        <select id="name-trait">
+                            <option value="sila">Síla, boj a odvaha</option>
+                            <option value="moudrost">Moudrost a rozvaha</option>
+                            <option value="mir">Mír, láska a příroda</option>
+                            <option value="nahodne">Zcela náhodný výběr</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="generateName()">Získat jméno</button>
+                    
+                    <div id="name-output" class="generator-output" style="margin-top: 15px;">
+                        Mužské: <strong id="name-male" style="color:var(--accent-primary);"></strong><br>
+                        Ženské: <strong id="name-female" style="color:var(--accent-primary);"></strong><br><br>
+                        <em>Význam: <span id="name-meaning"></span></em>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZDROJE -->
+    <section id="zdroje">
+        <div class="container">
+            <h2 class="section-title">Doporučené Zdroje a Literatura</h2>
+            <div class="links-grid">
+                <a href="https://cs.wikipedia.org/wiki/Slovansk%C3%A1_mytologie" target="_blank">Slovanská mytologie</a>
+                <a href="https://cs.wikipedia.org/wiki/Rodnov%C4%9B%C5%99%C3%AD" target="_blank">O Rodnověří</a>
+                <a href="https://cs.wikipedia.org/wiki/Seznam_slovansk%C3%BDch_boh%C5%AF" target="_blank">Seznam Bohů</a>
+                <a href="https://cs.wikipedia.org/wiki/Perun" target="_blank">Bůh Perun</a>
+                <a href="https://cs.wikipedia.org/wiki/Veles" target="_blank">Bůh Veles</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PATIČKA -->
+    <footer>
+        <div class="container">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="currentColor" style="color:var(--accent-primary); margin-bottom:15px;">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M20 50 Q 50 20 80 50 T 20 50" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <p>Vytvořeno pro projekt Rodnověří.cz. Sláva Bohům a Předkům našim!</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">&copy; 2026 Rodnověrný portál.</p>
+        </div>
+    </footer>
+
+    <!-- COOKIE LIŠTA -->
+    <div id="cookie-banner">
+        <p>Tento web používá k uchování nastavení (jako je volba motivu) lokální úložiště prohlížeče (LocalStorage). Sledovací soubory třetích stran nevyužíváme.</p>
+        <div class="cookie-btns">
+            <button class="btn" onclick="acceptCookies()">Přijmout vše</button>
+            <button class="btn" style="background: transparent;" onclick="acceptCookies()">Přijmout nezbytné</button>
+        </div>
+    </div>
+
+    <!-- TLAČÍTKO ZPĚT NAHORU -->
+    <button id="scroll-top" onclick="window.scrollTo(0,0)" title="Zpět nahoru">↑</button>
+
+    <!-- MODÁLNÍ OKNO PRO BOHY -->
+    <div class="modal-overlay" id="god-modal" onclick="closeModal(event)">
+        <div class="modal printable" id="god-modal-content">
+            <button class="modal-close" onclick="closeModal(event, true)">&times;</button>
+            <h2 id="modal-title" style="font-size: 2rem;"></h2>
+            <p><strong id="modal-subtitle" style="color:var(--text-muted);"></strong></p>
+            <div class="ornament-divider" style="margin: 15px 0;">
+                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="currentColor"/></svg>
+            </div>
+            <p><strong>Atributy:</strong> <span id="modal-attributes"></span></p>
+            <div id="modal-desc" style="margin-top:20px;"></div>
+            
+            <div class="modal-actions">
+                <button class="btn" onclick="printElement('god-modal-content')">Exportovat kartu do PDF / Tisk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIKA -->
+    <script>
+        // === 1. DATA: BOHOVÉ (Pro Grid) ===
+        const godsData = [
+            { id: 'rod', name: 'Rod', title: 'Nejvyšší stvořitel, prabůh', attr: 'Zlaté vejce, dub, rodokmen', desc: 'Prvotní stvořitel celého vesmíru a otec všech bohů. Podle mýtu spal uvnitř Zlatého vejce, které svou silou rozbil a oddělil světlo od tmy, Prav od Navu.' },
+            { id: 'svarog', name: 'Svarog', title: 'Bůh kovářství a nebes', attr: 'Kladivo, nebeský oheň, kovářská výheň', desc: 'Otec slunce (Dažboga) a ohně (Svarožice). Ukoval slunce a upevnil jej na oblohu. Ustanovil zákon monogamního manželství a daroval lidem kovářské kleště.' },
+            { id: 'perun', name: 'Perun', title: 'Bůh bouře, hromu a spravedlnosti', attr: 'Sekera, dub, blesk, orel', desc: 'Nejvyšší bůh panteonu pro válečníky. Vládce nebes a blesku, ochránce spravedlnosti a smluv. Jeho zbraní je sekera, která se po hodu vrací do ruky. Neustále bojuje s Velesem o kosmický řád.' },
+            { id: 'veles', name: 'Veles', title: 'Bůh podsvětí, magie a stád', attr: 'Rohy, medvěd, had, hudební nástroj', desc: 'Rohatý bůh země, vody, moudrosti a říše mrtvých (Nav). Je ochráncem stád a hospodářství. Podporuje umělce a čaroděje. Jako velký had (Zmij) obývá kořeny Světového stromu.' },
+            { id: 'dazbog', name: 'Dažbog', title: 'Bůh Slunce a dárce bohatství', attr: 'Zlatý vůz, slunce, zlato', desc: 'Syn Svarogův, zosobnění slunce. Každé ráno vyjíždí na svém zlatém voze na oblohu. Slované se považovali za "Dažbogovy vnuky", tedy za potomky samotného slunce.' },
+            { id: 'svarozic', name: 'Svarožic', title: 'Bůh pozemského ohně', attr: 'Oheň, posvátné plameny, obětiště', desc: 'Ochránce domácího krbu a obětního ohně. Prostředník mezi lidmi a bohy, skrze kterého byly posílány obětiny z našeho světa do světa Prav.' },
+            { id: 'svantovit', name: 'Svantovít', title: 'Čtyřhlavý bůh věštění a hojnosti', attr: 'Bílý kůň, roh hojnosti, čtyři tváře', desc: 'Hlavní bůh pobaltských Slovanů (Rujána). Jeho čtyři tváře hledí do čtyř světových stran, vidí vše. Bílý kůň byl využíván k věštění výsledku válek či úrody.' },
+            { id: 'triglav', name: 'Triglav', title: 'Tříhlavý bůh tří světů', attr: 'Černý kůň, tři tváře, zlatá páska přes oči', desc: 'Ctěn ve Štětíně. Tři hlavy symbolizují jeho vládu nad Prav, Jav a Nav. Jeho oči jsou zavázané, aby neviděl hříchy lidí a nezničil svět.' },
+            { id: 'radegast', name: 'Radegast', title: 'Bůh pohostinnosti a slunce', attr: 'Lví hlava na hrudi, sekera, štít s býčí hlavou', desc: 'Uctívaný kmenem Ratarů. Ochránce hostů a cestovatelů. Místem jeho kultu byl hrad Retra. Je ztělesněním cti, síly a posvátného práva hosta.' },
+            { id: 'jarovit', name: 'Jarovít (Jarilo)', title: 'Bůh války, plodnosti a jara', attr: 'Zlatý štít, obilné klasy, jarní slunce', desc: 'Mladý a vášnivý bůh, který každé jaro otevírá zemi, aby mohla plodit. Nese atributy válečníka i zemědělce – jeho zlatý štít ochraňuje úrodu.' },
+            { id: 'mokos', name: 'Mokoš', title: 'Matka Země, bohyně osudu a žen', attr: 'Vřeteno, hlína, vlna, plodnost', desc: 'Jediná bohyně Vladimírova panteonu. Představuje vlhkou, plodnou zemi. Je ochránkyní žen, spřádá nitě lidského osudu a chrání posvátnost pramenů.' },
+            { id: 'lada', name: 'Lada', title: 'Bohyně lásky a harmonie', attr: 'Květiny, jaro, bílá barva, labuť', desc: 'Ztělesnění absolutní harmonie, krásy a milostné touhy. Manželství uzavřená pod její ochranou jsou pevná a šťastná.' },
+            { id: 'ziva', name: 'Živa (Siva)', title: 'Bohyně života a léta', attr: 'Jablko, hrozny, plné klasy', desc: 'Bohyně zralého léta, životní síly a plodnosti. Vyobrazována jako zralá, krásná žena držící plody země. Dárkyně vitality.' },
+            { id: 'vesna', name: 'Vesna', title: 'Bohyně jara a mládí', attr: 'První květy, vlaštovky, zelená barva', desc: 'Přináší teplo a znovuzrození přírody po kruté zimě. Zahání Moranu a symbolizuje radost, mládí a nespoutanou jarní energii.' },
+            { id: 'osen', name: 'Oseň', title: 'Bohyně podzimu a sklizně', attr: 'Srp, podzimní listí, zralé obilí', desc: 'Spjata s podzimní rovnodenností, ukládáním zásob a zklidněním přírody před příchodem zimy.' },
+            { id: 'morana', name: 'Morana (Marena)', title: 'Bohyně zimy a smrti', attr: 'Sníh, led, srp, suché větve', desc: 'Vládne mrtvé části roku. Ačkoliv přináší smrt a chlad, je nezbytnou součástí cyklu, dávající přírodě čas na odpočinek. Na jaře je její figurína upálena ahozena do vody.' },
+            { id: 'stribog', name: 'Stribog', title: 'Bůh větrů a povětří', attr: 'Vítr, luk a šípy, mraky', desc: 'Stařec, který vládne všem větrům, jež jsou považovány za jeho vnuky. Námořníci a zemědělci mu přinášeli oběti pro dobré počasí.' },
+            { id: 'chors', name: 'Chors', title: 'Bůh Měsíce a noční oblohy', attr: 'Měsíc, stříbro, noční zvířata', desc: 'Tajemný bůh nočního svitu. Podporuje tajné rituály a magii, ovládá vodní cykly a vlky, kteří byli nazýváni jeho "psy".' },
+            { id: 'belbog', name: 'Bělbog', title: 'Bůh světla a dobra', attr: 'Bílá barva, sluneční paprsek, den', desc: 'Ztělesnění pozitivních sil vesmíru, štěstí a úspěchu. Tvoří dualitní protipól temným a zhoubným silám.' }
+        ];
+
+        // Vykreslení mřížky Bohů
+        const gridBox = document.getElementById('gods-grid');
+        godsData.forEach(god => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <svg class="card-icon" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="4"/><path d="M50 20 L50 80 M20 50 L80 50" stroke="currentColor" stroke-width="4"/></svg>
+                <h3>${god.name}</h3>
+                <p style="font-size:0.9rem; color:var(--text-muted);">${god.title}</p>
+                <button class="btn" style="margin-top:10px; font-size:0.9rem;" onclick="openModal('${god.id}')">Číst podrobněji</button>
+            `;
+            gridBox.appendChild(card);
+        });
+
+        // Modální okno logika
+        function openModal(id) {
+            const god = godsData.find(g => g.id === id);
+            if(god) {
+                document.getElementById('modal-title').innerText = god.name;
+                document.getElementById('modal-subtitle').innerText = god.title;
+                document.getElementById('modal-attributes').innerText = god.attr;
+                document.getElementById('modal-desc').innerHTML = `<p>${god.desc}</p>`;
+                
+                document.getElementById('god-modal').classList.add('active');
+            }
+        }
+
+        function closeModal(event, force = false) {
+            if (force || event.target === document.getElementById('god-modal')) {
+                document.getElementById('god-modal').classList.remove('active');
+            }
+        }
+
+        // === 2. PRŮVODCE OBŘADEM (Taby) ===
+        const guideContent = [
+            `<h3>1. Příprava a vytvoření prostoru</h3>
+             <p>Vyber si klidné místo v přírodě (pod starým stromem) nebo doma u oltáříku. Připrav si <strong>obětinu</strong> (chléb, med, pivo, jablko nebo mléko) a nádobu pro oheň či svíci.</p>`,
+            
+            `<h3>2. Očištění</h3>
+             <p>Před započetím rituálu je nutné se zklidnit a očistit. Umyj si obličej a ruce pramenitou vodou. Zapal svíci nebo oheň a prones: <em>"Ať oheň spálí vše zlé a voda smyje zármutek."</em></p>`,
+            
+            `<h3>3. Volání Bohů a Předků</h3>
+             <p>Otoč se postupně do čtyř světových stran. Pozdrav Matku Zemi, Nebeského Svaroga a nakonec pozvi k obřadu Bohy, ke kterým směřuješ svůj záměr, a své zesnulé Předky (Dědy).</p>`,
+            
+            `<h3>4. Předání Obětiny (Třeba)</h3>
+             <p>Vezmi připravený dar (např. kus chleba s medem) a se slovy prosby nebo poděkování jej odevzdej – vlož do ohně, zakopej do země nebo polož ke kořenům stromu. Část obětiny sněz a vypij sám na zpečetění svazku.</p>`,
+            
+            `<h3>5. Závěr a Poděkování</h3>
+             <p>S úctou poděkuj přítomným silám: <em>"Sláva Bohům, sláva Předkům! Ať mír zůstane s námi."</em> Uhas oheň (bezpečně) a prostor opust s pocitem vnitřní síly a čistoty.</p>`
+        ];
+
+        function showGuide(index) {
+            document.querySelectorAll('.guide-tab').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+            const contentBox = document.getElementById('guide-content-box');
+            contentBox.innerHTML = `<div class="guide-content active">${guideContent[index]}</div>`;
+        }
+        showGuide(0); // init
+
+        // === 3. VÝPOČET FÁZE MĚSÍCE ===
+        function calculateMoonPhase() {
+            // Přibližný výpočet od známého Novu (např. 11. ledna 2024)
+            const knownNewMoon = new Date('2024-01-11T11:57:00Z').getTime();
+            const now = new Date().getTime();
+            const lunarCycle = 29.53058867 * 24 * 60 * 60 * 1000;
+            const msPassed = now - knownNewMoon;
+            let currentCyclePos = (msPassed % lunarCycle) / lunarCycle; // 0.0 do 1.0
+
+            let phaseName = "";
+            let advice = "";
+            let iconPath = "";
+
+            if (currentCyclePos < 0.05 || currentCyclePos > 0.95) {
+                phaseName = "Nov (Temný měsíc)";
+                advice = "Čas Mokoše a Velesa. Vhodné pro rozjímání a uctění Předků.";
+                iconPath = "M50 10 A40 40 0 1 0 50 90 A40 40 0 1 1 50 10"; // Srpek
+            } else if (currentCyclePos < 0.45) {
+                phaseName = "Dorůstající Měsíc";
+                advice = "Čas pro tvoření, setbu a prosby o růst (Dažbog, Jarovít).";
+                iconPath = "M50 10 A40 40 0 1 0 50 90 A20 40 0 1 0 50 10"; // Polovina
+            } else if (currentCyclePos < 0.55) {
+                phaseName = "Úplněk";
+                advice = "Vrchol síly! Ideální pro velké oslavy, dary a magii ochrany.";
+                iconPath = "M50 10 A40 40 0 1 0 50 90 A40 40 0 1 0 50 10"; // Plný kruh
+            } else {
+                phaseName = "Ubývající Měsíc";
+                advice = "Čas očišťování, zbavování se nemocí a zlozvyků (Morana).";
+                iconPath = "M50 10 A40 40 0 1 1 50 90 A20 40 0 1 1 50 10"; // Druhá polovina
+            }
+
+            document.getElementById('moon-phase-name').innerText = phaseName;
+            document.getElementById('moon-advice').innerText = advice;
+            document.querySelector('.moon-icon').innerHTML = `<path d="${iconPath}" fill="currentColor"/>`;
+        }
+        calculateMoonPhase();
+
+        // === 4. GENERÁTOR MODLITEB ===
+        const prayerParts = {
+            "Perun": "Mocný Perune, vládce nebes a blesků, hromovládný strážce spravedlnosti,",
+            "Veles": "Moudrý Velese, pane hlubokých hvozdů a skrytých tajemství Navu,",
+            "Mokos": "Mokoši, Matko vlhké země, dárkyně života a přediváčko osudů,",
+            "Dazbog": "Světlý Dažbogu, děde náš, jehož zlatý vůz přináší teplo a světlo,",
+            "Predkove": "Předkové naši, pradedové a prabáby krve naší, vy jež bdíte z Navu,"
+        };
+        const intentParts = {
+            "podakovani": "přijmi tento dar jako projev naší vděčnosti. Děkujeme za plody tvé přízně, které jsi nám daroval, a za rovnováhu, kterou udržuješ. Sláva tobě!",
+            "ochrana": "pohlédni na tento dům a rod. Odvrať od nás zlé síly, nemoci a zášť nepřátel. Postav svou ochranu kolem našich hranic, ať žijeme v míru. Sláva tobě!",
+            "uroda": "požehnej naší práci a naší zemi. Dej, ať zrno klíčí, ať stáda rostou a naše sýpky jsou na podzim plné. Prosíme o tvou sílu a přízeň. Sláva tobě!",
+            "zdravi": "vlij sílu do našich žil a tělesných schránek. Odežeň slabost a neduhy, ať můžeme pevně stát na nohou a konat své dílo na tomto světě. Sláva tobě!"
+        };
+
+        function generatePrayer() {
+            const god = document.getElementById('prayer-god').value;
+            const intent = document.getElementById('prayer-intent').value;
+            const text = `${prayerParts[god]} ${intentParts[intent]}`;
+            
+            document.getElementById('prayer-text').innerText = text;
+            const outBox = document.getElementById('prayer-output-box');
+            outBox.style.display = 'block';
+            
+            // Animace pro zobrazení
+            outBox.style.opacity = '0';
+            setTimeout(() => outBox.style.opacity = '1', 50);
+            outBox.style.transition = 'opacity 0.5s';
+        }
+
+        // === 5. SLOVANSKÝ HOROSKOP ===
+        const zodiacData = [
+            { m:3, d:21, gm:4, gd:20, god: "Jarovít (Jaro, Odvaha)", tree: "Bříza - symbol nových začátků", desc: "Jsi průbojný, plný energie a vášně. Rád začínáš nové věci a nebojíš se překážek." },
+            { m:4, d:21, gm:5, gd:21, god: "Lada (Láska, Harmonie)", tree: "Lípa - strom smíření a ochrany", desc: "Miluješ krásu, klid a rodinnou pohodu. Tvá síla tkví v diplomacii a laskavosti." },
+            { m:5, d:22, gm:6, gd:21, god: "Živa (Život, Vitalita)", tree: "Jasan - spojnice světů", desc: "Jsi všestranný a komunikativní, plný životní síly. Rozdáváš radost svému okolí." },
+            { m:6, d:22, gm:7, gd:22, god: "Mokoš (Rodina, Intuice)", tree: "Vrba - spjata s vodou a citem", desc: "Máš silnou intuici, jsi ochranářský a vnímavý k potřebám ostatních. Pevně stojíš na zemi." },
+            { m:7, d:23, gm:8, gd:22, god: "Perun (Síla, Vůdcovství)", tree: "Dub - král stromů, nezlomnost", desc: "Jsi přirozený vůdce. Máš pevnou vůli, chráníš slabší a máš vysoký smysl pro spravedlnost." },
+            { m:8, d:23, gm:9, gd:22, god: "Oseň (Sklizeň, Rozvaha)", tree: "Líska - strom moudrosti", desc: "Jsi praktický, pracovitý a pečlivý. Dokážeš zhodnotit plody své práce a analyzovat situaci." },
+            { m:9, d:23, gm:10, gd:23, god: "Svantovít (Rovnováha, Vize)", tree: "Jabloň - plodnost a partnerství", desc: "Hledáš rovnováhu a spravedlnost. Vidíš věci z více úhlů pohledu a ceníš si estetiky." },
+            { m:10, d:24, gm:11, gd:22, god: "Veles (Tajemství, Moudrost)", tree: "Tis - ochrana před zlem", desc: "Lákají tě tajemství a magie života. Jsi hluboký myslitel s velkou vnitřní silou a odhodláním." },
+            { m:11, d:23, gm:12, gd:21, god: "Stribog (Rozhled, Cestování)", tree: "Borovice - odolnost a nezávislost", desc: "Jsi svobodomyslný cestovatel, rád objevuješ nové obzory a jsi stále v pohybu jako vítr." },
+            { m:12, d:22, gm:1, gd:20, god: "Rod (Základ, Tradice)", tree: "Jedle - vytrvalost v zimě", desc: "Ctíš tradice, rodinu a řád. Jsi spolehlivý, ambiciózní a pomalu ale jistě kráčíš k cíli." },
+            { m:1, d:21, gm:2, gd:20, god: "Svarog (Tvorba, Nebe)", tree: "Osika - spojení s duchy", desc: "Jsi inovátor a snílek. Neustále něco tvoříš v hlavě a vynikáš originálními nápady." },
+            { m:2, d:21, gm:3, gd:20, god: "Morana (Transformace, Voda)", tree: "Olše - ochrana a obnova", desc: "Jsi velmi empatický a duchovně založený. Dokážeš se transformovat a proplouvat těžkostmi." }
+        ];
+
+        function calculateHoroscope() {
+            const dateInput = document.getElementById('horoscope-date').value;
+            if(!dateInput) { alert("Zadej datum narození."); return; }
+            const date = new Date(dateInput);
+            const m = date.getMonth() + 1; // 1-12
+            const d = date.getDate();
+
+            let result = zodiacData[0]; // fallback
+            for (let z of zodiacData) {
+                if ((m === z.m && d >= z.d) || (m === z.gm && d <= z.gd)) {
+                    result = z; break;
+                }
+            }
+            if (m===12 && d>=22 || m===1 && d<=20) result = zodiacData[9]; // Capricorn wrap fix
+
+            document.getElementById('horoscope-god').innerText = `Patron: ${result.god}`;
+            document.getElementById('horoscope-tree').innerText = result.tree;
+            document.getElementById('horoscope-desc').innerText = result.desc;
+            document.getElementById('horoscope-output').style.display = 'block';
+        }
+
+        // === 6. GENERÁTOR JMEN ===
+        const namesData = {
+            "sila": { m: ["Bořivoj", "Vladimír", "Jaroslav", "Vojtěch", "Zdirad"], f: ["Vlasta", "Jaroslava", "Zdislava", "Bojdana"], mean: "Spojeno s bojem, slávou a ochranou." },
+            "moudrost": { m: ["Radomír", "Kazimír", "Dobroslav", "Bohumil"], f: ["Mlada", "Radmila", "Dobromila", "Bohdana"], mean: "Značí mírnost v radách, dar od bohů a životní moudrost." },
+            "mir": { m: ["Lubomír", "Miloslav", "Tichomír", "Hostivít"], f: ["Lada", "Světlana", "Milada", "Miloslava"], mean: "Nese význam lásky, míru, pohostinnosti a světla." },
+            "nahodne": { m: ["Dalibor", "Nezamysl", "Křesomysl", "Rostislav", "Ljubov"], f: ["Libuše", "Kazi", "Teta", "Živa", "Svatava"], mean: "Náhodný výběr ze starých slovanských bájí a legend." }
+        };
+
+        function generateName() {
+            const trait = document.getElementById('name-trait').value;
+            const data = namesData[trait];
+            const randM = data.m[Math.floor(Math.random() * data.m.length)];
+            const randF = data.f[Math.floor(Math.random() * data.f.length)];
+            
+            document.getElementById('name-male').innerText = randM;
+            document.getElementById('name-female').innerText = randF;
+            document.getElementById('name-meaning').innerText = data.mean;
+            document.getElementById('name-output').style.display = 'block';
+        }
+
+        // === 7. INTERAKTIVNÍ OHEŇ ===
+        function toggleFire() {
+            const flame = document.getElementById('sanctuary-flame');
+            const btn = document.getElementById('fire-btn');
+            flame.classList.toggle('lit');
+            if(flame.classList.contains('lit')) {
+                btn.innerText = "Uhasit posvátný oheň";
+            } else {
+                btn.innerText = "Zapálit posvátný oheň";
+            }
+        }
+
+        // === 8. TISK / PDF EXPORT ===
+        function printElement(elementId) {
+            // Přidá třídu pro tisk vybranému elementu
+            document.querySelectorAll('.printable').forEach(e => e.classList.remove('printable'));
+            const el = document.getElementById(elementId);
+            el.classList.add('printable');
+            window.print();
+        }
+
+        // === 9. UI / NAVIGACE / MOTIVY ===
+        
+        // Téma - Denní / Noční
+        const themeBtn = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+        
+        function setTheme(isNight) {
+            if(isNight) {
+                root.setAttribute('data-theme', 'night');
+                localStorage.setItem('rodnoveri_theme', 'night');
+                document.getElementById('theme-icon').innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>'; // Měsíc
+            } else {
+                root.removeAttribute('data-theme');
+                localStorage.setItem('rodnoveri_theme', 'day');
+                document.getElementById('theme-icon').innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>'; // Slunce
+            }
+        }
+        
+        // Init motivu z localStorage
+        if(localStorage.getItem('rodnoveri_theme') === 'night') setTheme(true);
+        else setTheme(false); // Default je den
+
+        themeBtn.addEventListener('click', () => {
+            const isNight = root.getAttribute('data-theme') === 'night';
+            setTheme(!isNight);
+        });
+
+        // Hamburger Menu
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        navLinks.addEventListener('click', () => {
+            if(window.innerWidth <= 768) navLinks.classList.remove('active');
+        });
+
+        // Scroll to top button
+        const scrollBtn = document.getElementById('scroll-top');
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 300) scrollBtn.style.display = 'block';
+            else scrollBtn.style.display = 'none';
+        });
+
+        // Cookies
+        const cookieBanner = document.getElementById('cookie-banner');
+        if(!localStorage.getItem('rodnoveri_cookies')) {
+            cookieBanner.style.display = 'flex';
+        } else {
+            cookieBanner.style.display = 'none';
+        }
+        function acceptCookies() {
+            localStorage.setItem('rodnoveri_cookies', 'accepted');
+            cookieBanner.style.display = 'none';
+        }
+
+    </script>
+</body>
+</html>
